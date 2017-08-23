@@ -2,13 +2,16 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.5;net35</TargetFrameworks>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>0.0.1</Version>
     <Authors>Rodrigo Speller</Authors>
     <Company></Company>
-    <Description />
+    <Description>The open implementation of dynamic unmanaged imports for .NET ( DllImportX )</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Copyright>Copyright © Rodrigo Speller 2017</Copyright>
+    <PackageLicenseUrl>https://github.com/rodrigo-speller/DllImportX/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/rodrigo-speller/DllImportX</PackageProjectUrl>
+    <PackageTags>DllImport</PackageTags>
   </PropertyGroup>
 
   <ItemGroup Condition="$(TargetFramework) != net35">
