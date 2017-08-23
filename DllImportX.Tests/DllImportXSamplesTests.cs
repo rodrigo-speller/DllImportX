@@ -6,29 +6,67 @@ using Xunit;
 
 namespace DllImportX.Tests.Sample01
 {
-    [Trait("Category", "Sample01 > DllImportX")]
-    public class DllImportXTests
+    [Trait("Category", "DllImportXSamplesInterface (IgnoreAttributes)")]
+    public class DllImportXTestsSimple : DllImportXTests
     {
-        DllImportXSamplesInterface Proxy = DllImportXFactory.Build<DllImportXSamplesInterface>(x =>
+        public DllImportXTestsSimple()
+            : base(DllImportXFactory.Build<DllImportXSamplesInterface>(x =>
+            {
+                x.IgnoreAttributes = true;
+                x.DllName = (IntPtr.Size == 8 ? "x64/" : "x86/") + x.DllName;
+            }))
+        { }
+        
+        public override void IntUnicodeString()
         {
-            x.DllName = (IntPtr.Size == 8 ? "x64/" : "x86/") + x.DllName;
-        });
+            Assert.Throws<Xunit.Sdk.EqualException>(
+                () => base.IntUnicodeString()
+            );
+        }
+
+        public override void IntRefUnicodeString()
+        {
+            Assert.Throws<Xunit.Sdk.EqualException>(
+                () => base.IntRefUnicodeString()
+            );
+        }
+    }
+
+    [Trait("Category", "DllImportXSamplesInterface")]
+    public class DllImportXTestsStrict : DllImportXTests
+    {
+        public DllImportXTestsStrict()
+            : base(DllImportXFactory.Build<DllImportXSamplesInterface>(x =>
+            {
+                x.DllName = (IntPtr.Size == 8 ? "x64/" : "x86/") + x.DllName;
+            }))
+        { }
+    }
+
+    public abstract class DllImportXTests
+    {
+        protected readonly DllImportXSamplesInterface Proxy;
+
+        public DllImportXTests(DllImportXSamplesInterface proxy)
+        {
+            Proxy = proxy;
+        }
 
         [Fact]
-        public void Void()
+        public virtual void Void()
         {
 
             Proxy.Void();
         }
 
         [Fact]
-        public void Int()
+        public virtual void Int()
         {
             Assert.Equal(-1, Proxy.Int());
         }
 
         [Fact]
-        public void IntInt()
+        public virtual void IntInt()
         {
             var random = new Random();
             var r = random.Next();
@@ -37,14 +75,14 @@ namespace DllImportX.Tests.Sample01
         }
 
         [Fact]
-        public void IntOutInt()
+        public virtual void IntOutInt()
         {
             var ret = Proxy.IntOutInt(out var param);
             Assert.Equal(~param, ret);
         }
 
         [Fact]
-        public void IntRefInt()
+        public virtual void IntRefInt()
         {
             var random = new Random();
             var value = random.Next();
@@ -57,7 +95,7 @@ namespace DllImportX.Tests.Sample01
         }
 
         [Fact]
-        public void RefIntInt()
+        public virtual void RefIntInt()
         {
             var random = new Random();
             var value = random.Next();
@@ -72,22 +110,57 @@ namespace DllImportX.Tests.Sample01
             {
                 Proxy.Free(ptr);
             }
-
+            
             Assert.Equal(value, ret);
         }
 
         [Fact]
-        public void IntAnsiString()
+        public virtual void IntAnsiString()
         {
             var str = "Hello World!";
 
             var md5 = System.Security.Cryptography.MD5.Create();
             var hash = BitConverter.ToInt32(md5.ComputeHash(Encoding.ASCII.GetBytes(str)), 0);
 
-            var byStr = Proxy.IntAnsiString(str);
+            var byBuffer = Proxy.IntRefAnsiString(ref str);
+            Assert.Equal(hash, byBuffer);
+            Assert.Equal(hash.ToString(CultureInfo.InvariantCulture), str);
+        }
+
+        [Fact]
+        public virtual void IntUnicodeString()
+        {
+            var str = "Hello World!";
+
+            var md5 = System.Security.Cryptography.MD5.Create();
+            var hash = BitConverter.ToInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(str)), 0);
+
+            var byStr = Proxy.IntUnicodeString(str);
             Assert.Equal(hash, byStr);
+        }
+
+        [Fact]
+        public virtual void IntRefAnsiString()
+        {
+            var str = "Hello World!";
+
+            var md5 = System.Security.Cryptography.MD5.Create();
+            var hash = BitConverter.ToInt32(md5.ComputeHash(Encoding.ASCII.GetBytes(str)), 0);
 
             var byBuffer = Proxy.IntRefAnsiString(ref str);
+            Assert.Equal(hash, byBuffer);
+            Assert.Equal(hash.ToString(CultureInfo.InvariantCulture), str);
+        }
+
+        [Fact]
+        public virtual void IntRefUnicodeString()
+        {
+            var str = "Hello World!";
+
+            var md5 = System.Security.Cryptography.MD5.Create();
+            var hash = BitConverter.ToInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(str)), 0);
+
+            var byBuffer = Proxy.IntRefUnicodeString(ref str);
             Assert.Equal(hash, byBuffer);
             Assert.Equal(hash.ToString(CultureInfo.InvariantCulture), str);
         }

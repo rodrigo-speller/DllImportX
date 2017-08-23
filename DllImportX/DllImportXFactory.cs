@@ -132,15 +132,81 @@ namespace System.Runtime.InteropServices
             };
 
             var clrImport = new CustomAttributeBuilder(ctor, new[] { options.DllName }, fields, fieldValues);
+
+            var ifaceMethod = options.Method;
+            var parameters = ifaceMethod.GetParameters();
             var method = typeBuilder.DefineMethod(
-                options.Method.Name,
+                ifaceMethod.Name,
                 MethodAttributes.Private | MethodAttributes.Static,
-                options.Method.ReturnType,
-                options.Method.GetParameters().Select(x => x.ParameterType).ToArray()
+                ifaceMethod.ReturnType,
+                ifaceMethod.GetParameters().Select(x => x.ParameterType).ToArray()
             );
+
+            if(!options.IgnoreAttributes)
+                DefineAttributes(ifaceMethod, method);
 
             method.SetCustomAttribute(clrImport);
             return method;
+        }
+
+        private static void DefineAttributes(MethodInfo ifaceMethod, MethodBuilder method)
+        {
+            var parameters = ifaceMethod.GetParameters();
+
+            CopyAttributes<MarshalAsAttribute>(ifaceMethod.ReturnParameter, method.DefineParameter(0, ParameterAttributes.None, null), (x, build) => build(new[] { typeof(UnmanagedType) }, new object[] { x.Value }));
+            for (int i = 0, c = parameters.Length; i < c;)
+            {
+                var ifaceParam = parameters[i++];
+                var paramBuilder = method.DefineParameter(i, ParameterAttributes.None, ifaceParam.Name);
+
+                CopyAttributes<InAttribute>(ifaceParam, paramBuilder,
+                    (x, build) => build(
+                        Type.EmptyTypes,
+                        new object[0]
+                    )
+                );
+                CopyAttributes<OutAttribute>(ifaceParam, paramBuilder,
+                    (x, build) => build(
+                        Type.EmptyTypes,
+                        new object[0]
+                    )
+                );
+                CopyAttributes<MarshalAsAttribute>(ifaceParam, paramBuilder,
+                    (x, build) => build(
+                        new[] { typeof(UnmanagedType) },
+                        new object[] { x.Value }
+                    )
+                );
+            }
+        }
+
+        private static void CopyAttributes<TAttributes>(
+                ParameterInfo ifaceParam,
+                ParameterBuilder parameter,
+                Action<TAttributes, Action<Type[], object[]>> builder)
+                where TAttributes : Attribute
+        {
+#if NET35
+                var ifaceAttr = (TAttributes)ifaceParam
+                    .GetCustomAttributes(typeof(TAttributes), false)
+                    .FirstOrDefault();
+#else
+            var ifaceAttr = ifaceParam.GetCustomAttribute<TAttributes>();
+#endif
+            if (ifaceAttr == null)
+                return;
+
+            builder(ifaceAttr, (types, values) =>
+            {
+                if (builder == null)
+                    return;
+
+                builder = null;
+
+                var parameterAttrCtor = typeof(TAttributes).GetConstructor(types);
+                var attributeBuilder = new CustomAttributeBuilder(parameterAttrCtor, values);
+                parameter.SetCustomAttribute(attributeBuilder);
+            });
         }
 
         private static void DefineNotImplementedMethods(TypeBuilder typeBuilder, IEnumerable<MethodInfo> otherMethods)

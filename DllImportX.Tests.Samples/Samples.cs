@@ -49,10 +49,26 @@ namespace DllImportX.Tests.Samples
         }
 
         [DllExport]
+        public static int IntUnicodeString([MarshalAs(UnmanagedType.LPWStr)] string str)
+        {
+            var md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            return BitConverter.ToInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(str)), 0);
+        }
+
+        [DllExport]
         public static int IntRefAnsiString(ref string str)
         {
             var md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
             var i = BitConverter.ToInt32(md5.ComputeHash(Encoding.ASCII.GetBytes(str)), 0);
+            str = i.ToString(CultureInfo.InvariantCulture);
+            return i;
+        }
+
+        [DllExport]
+        public static int IntRefUnicodeString([MarshalAs(UnmanagedType.LPWStr)] ref string str)
+        {
+            var md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            var i = BitConverter.ToInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(str)), 0);
             str = i.ToString(CultureInfo.InvariantCulture);
             return i;
         }

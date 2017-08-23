@@ -59,6 +59,8 @@ namespace System.Runtime.InteropServices
         /// </summary>
         public bool ThrowOnUnmappableChar;
 
+        public bool IgnoreAttributes;
+
         public readonly MethodInfo Method;
 
         public DllImportXOptions(MethodInfo method)
