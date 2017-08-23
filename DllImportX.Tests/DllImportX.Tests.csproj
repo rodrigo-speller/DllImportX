@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <Authors>Rodrigo Speller</Authors>
+    <Company></Company>
+    <Copyright>Copyright © Rodrigo Speller 2017</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DllImportX\DllImportX.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="..\DllImportX.Tests.Samples\bin\$(Configuration)\x64\DllImportX.Tests.Samples.dll">
+      <link>x64\DllImportX.Tests.Samples.dll</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\DllImportX.Tests.Samples\bin\$(Configuration)\x86\DllImportX.Tests.Samples.dll">
+      <link>x86\DllImportX.Tests.Samples.dll</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
