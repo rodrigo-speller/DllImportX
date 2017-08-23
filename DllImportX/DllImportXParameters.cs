@@ -70,10 +70,7 @@ namespace System.Runtime.InteropServices
 
         private void Initialize(MethodInfo method)
         {
-            var import = (DllImportXAttribute)method
-                .GetCustomAttributes(typeof(DllImportXAttribute), false)
-                .FirstOrDefault();
-
+            var import = (DllImportXAttribute)method.GetCustomAttributes(typeof(DllImportXAttribute), false).FirstOrDefault();
             if (import != null)
                 Initialize(import);
 

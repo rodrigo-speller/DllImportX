@@ -1,3 +1,4 @@
+using DllImportX;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -22,8 +23,11 @@ namespace System.Runtime.InteropServices
         public static Type ImplementInterface(Type iface, DllImportXFilter filter)
         {
             var assemblyName = new AssemblyName("DllImportX");
-
+#if NET35
             var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+#else
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+#endif
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
             var typeBuilder = DeclareType(iface, moduleBuilder);
             var methods = GetMethods(iface, filter, out var otherMethods);
@@ -46,15 +50,19 @@ namespace System.Runtime.InteropServices
 
         private static void ValidateInterface(Type type)
         {
+#if NET35
             if (!type.IsInterface)
-                throw new InvalidOperationException(InvalidTypeExceptionMessage);
+#else
+            if (!type.GetTypeInfo().IsInterface)
+#endif
+            throw new InvalidOperationException(InvalidTypeExceptionMessage);
         }
 
         private static IEnumerable<DllImportXOptions> GetMethods(Type iface, DllImportXFilter filter, out IEnumerable<MethodInfo> others)
         {
             var methods = new { Imports = new List<DllImportXOptions>(), Others = new List<MethodInfo>() };
 
-            foreach (var x in iface.GetMethods())
+            foreach(var x in iface.GetMethods())
             {
                 if (x.GetCustomAttributes(typeof(DllImportXAttribute), false).FirstOrDefault() == null)
                     methods.Others.Add(x);
@@ -64,7 +72,7 @@ namespace System.Runtime.InteropServices
 
             if (filter != null)
             {
-                foreach (var import in methods.Imports)
+                foreach(var import in methods.Imports)
                     filter(import);
             }
 
@@ -74,7 +82,7 @@ namespace System.Runtime.InteropServices
 
         private static void DefineImportMethods(TypeBuilder typeBuilder, IEnumerable<DllImportXOptions> imports)
         {
-            foreach (var options in imports)
+            foreach(var options in imports)
                 ImplementMethod(typeBuilder, options);
         }
 
@@ -100,7 +108,7 @@ namespace System.Runtime.InteropServices
         {
             var clrImportType = typeof(DllImportAttribute);
             var ctor = clrImportType.GetConstructor(new[] { typeof(string) });
-
+            
             var fields = new[] {
                 clrImportType.GetField("EntryPoint"),
                 clrImportType.GetField("ExactSpelling"),
@@ -140,7 +148,7 @@ namespace System.Runtime.InteropServices
             var clrExceptionType = typeof(NotImplementedException);
             var ctor = clrExceptionType.GetConstructor(Type.EmptyTypes);
 
-            foreach (var method in otherMethods)
+            foreach(var method in otherMethods)
             {
                 var caller = typeBuilder
                     .DefineMethod(
