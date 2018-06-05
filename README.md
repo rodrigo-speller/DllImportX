@@ -24,7 +24,7 @@ If you have an unmanaged static-link library with this functions:
 // sample.h
 // Unmanaged C sample functions
 
-void uVoidSample();
+void cVoidSample();
 int cIntSample(int intParam);
 void cOutIntSample(int* outIntParam);
 void cRefIntSample(int* refIntParam);
