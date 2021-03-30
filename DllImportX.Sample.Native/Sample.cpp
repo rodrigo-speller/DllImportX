@@ -1,5 +1,3 @@
-// #pragma GCC diagnostic ignored "-fpermissive"
-
 #include <cstdlib>
 #include <string.h>
 
@@ -10,15 +8,7 @@
 #include "lib/crypto.cpp"
 #include "lib/string.cpp"
 
-#ifdef DLLIMPORTX_OS_WINDOWS
-    #ifndef __cplusplus
-        #define EXTERN extern __declspec(dllexport)
-    #else
-        #define EXTERN extern "C" __declspec(dllexport) 
-    #endif
-#else
-    #define EXTERN extern "C"
-#endif
+// Sample functions
 
 EXTERN void Void() { }
 
