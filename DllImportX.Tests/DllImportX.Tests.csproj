@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <Authors>Rodrigo Speller</Authors>
     <Company></Company>
@@ -16,17 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DllImportX\DllImportX.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="..\DllImportX.Tests.Samples\bin\$(Configuration)\x64\DllImportX.Tests.Samples.dll">
-      <link>x64\DllImportX.Tests.Samples.dll</link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\DllImportX.Tests.Samples\bin\$(Configuration)\x86\DllImportX.Tests.Samples.dll">
-      <link>x86\DllImportX.Tests.Samples.dll</link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\DllImportX.Sample\DllImportX.Sample.csproj" />
   </ItemGroup>
 
 </Project>

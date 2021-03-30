@@ -2,19 +2,16 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+using DllImportX.Sample;
 using Xunit;
 
 namespace DllImportX.Tests.Sample01
 {
-    [Trait("Category", "DllImportXSamplesInterface (IgnoreAttributes)")]
+    [Trait("Category", "IDllImportXSample (IgnoreAttributes)")]
     public class DllImportXTestsSimple : DllImportXTests
     {
         public DllImportXTestsSimple()
-            : base(DllImportXFactory.Build<DllImportXSamplesInterface>(x =>
-            {
-                x.IgnoreAttributes = true;
-                x.DllName = (IntPtr.Size == 8 ? "x64/" : "x86/") + x.DllName;
-            }))
+            : base(DllImportXSample.CreateWithIgnoreAttributes())
         { }
         
         public override void IntUnicodeString()
@@ -32,22 +29,19 @@ namespace DllImportX.Tests.Sample01
         }
     }
 
-    [Trait("Category", "DllImportXSamplesInterface")]
+    [Trait("Category", "IDllImportXSample")]
     public class DllImportXTestsStrict : DllImportXTests
     {
         public DllImportXTestsStrict()
-            : base(DllImportXFactory.Build<DllImportXSamplesInterface>(x =>
-            {
-                x.DllName = (IntPtr.Size == 8 ? "x64/" : "x86/") + x.DllName;
-            }))
+            : base(DllImportXSample.Create())
         { }
     }
 
     public abstract class DllImportXTests
     {
-        protected readonly DllImportXSamplesInterface Proxy;
+        protected readonly IDllImportXSample Proxy;
 
-        public DllImportXTests(DllImportXSamplesInterface proxy)
+        public DllImportXTests(IDllImportXSample proxy)
         {
             Proxy = proxy;
         }
