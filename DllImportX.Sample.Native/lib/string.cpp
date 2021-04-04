@@ -4,7 +4,7 @@
 #include <cwchar>
 #include <cstdio>
 #include <algorithm>
-#include "lib/3rd/android/platform/system/core/libutils/Unicode.cpp"
+#include "3rd/android/platform/system/core/libutils/Unicode.cpp"
 
 char* toString(int value, char* buf)
 {
