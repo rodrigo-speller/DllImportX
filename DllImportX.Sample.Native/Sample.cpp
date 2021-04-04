@@ -8,28 +8,30 @@
 #include "lib/crypto.cpp"
 #include "lib/string.cpp"
 
+#include "Sample.h"
+
 // Sample functions
 
-EXTERN void Void() { }
+void Void() { }
 
-EXTERN int Int() { return -1; }
+int Int() { return -1; }
 
-EXTERN int IntInt(int i) { return ~i; }
+int IntInt(int i) { return ~i; }
 
-EXTERN int IntOutInt(int* i)
+int IntOutInt(int* i)
 {
     *i = 123;
     return ~*i;
 }
 
-EXTERN int IntRefInt(int* i)
+int IntRefInt(int* i)
 {
     int ret = *i;
     *i = ~*i;
     return ret;
 }
 
-EXTERN int* RefIntInt(int i)
+int* RefIntInt(int i)
 {
     int*        _returnValue;
 
@@ -39,7 +41,7 @@ EXTERN int* RefIntInt(int i)
     return _returnValue;
 }
 
-EXTERN int IntAnsiString(char* str)
+int IntAnsiString(char* str)
 {
     size_t      _str_len;
     uint8_t*    _hash;
@@ -55,7 +57,7 @@ EXTERN int IntAnsiString(char* str)
     return _returnValue;
 }
 
-EXTERN int IntUnicodeString(char16_t* str)
+int IntUnicodeString(char16_t* str)
 {
     size_t      _str_len;
     char*       _str_utf8;
@@ -81,7 +83,7 @@ EXTERN int IntUnicodeString(char16_t* str)
     return _returnValue;
 }
 
-EXTERN int IntRefAnsiString(char* &str)
+int IntRefAnsiString(char* &str)
 {
     size_t      _str_len;
     uint8_t*    _hash;
@@ -99,7 +101,7 @@ EXTERN int IntRefAnsiString(char* &str)
     return _returnValue;
 }
 
-EXTERN int IntRefUnicodeString(char16_t*& str)
+int IntRefUnicodeString(char16_t*& str)
 {
     size_t      _str_len;
     char*       _str_utf8;
@@ -127,7 +129,7 @@ EXTERN int IntRefUnicodeString(char16_t*& str)
     return _returnValue;
 }
 
-EXTERN void Free(void* ptr)
+void Free(void* ptr)
 {
     free(ptr);
 }
