@@ -3,7 +3,7 @@ os:
   - linux
   - windows
 mono: none
-dotnet: 5.0.201
+dotnet: 3.1
 script:
   - dotnet restore
   - dotnet build ./DllImportX
