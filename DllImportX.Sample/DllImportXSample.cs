@@ -47,7 +47,7 @@ namespace DllImportX.Sample
                 }
                 else
                 {
-                    return Path.Combine(binDirectory, "sample-lib", "win-86", $"{name}.dll");
+                    return Path.Combine(binDirectory, "sample-lib", "win-x86", $"{name}.dll");
                 }
             }
 
