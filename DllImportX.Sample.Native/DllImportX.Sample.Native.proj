@@ -10,15 +10,12 @@
 
   <Target Name="DllImportX_Sample_Native_Build" BeforeTargets="BeforeBuild">
 
-    <Exec Command="$(MSBuildThisFileDirectory)build/build" />
-
     <ItemGroup>
-      <FilesToCopy Include="obj/sample-lib/**/*.dll" />
-      <FilesToCopy Include="obj/sample-lib/**/*.so" />
+      <AssetsToCopy Include="assets/**/*" />
 
-      <ContentWithTargetPath Include="@(FilesToCopy)">
+      <ContentWithTargetPath Include="@(AssetsToCopy)">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <TargetPath>sample-lib/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+        <TargetPath>%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
       </ContentWithTargetPath>
     </ItemGroup>
 
