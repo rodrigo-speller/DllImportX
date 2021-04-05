@@ -1,4 +1,7 @@
 language: csharp
+os:
+  - linux
+  - windows
 mono: none
 dotnet: 2.0.0
 script:
